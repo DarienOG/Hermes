@@ -1,0 +1,103 @@
+CREATE TABLE IF NOT EXISTS leagues (
+    league_id TEXT PRIMARY KEY,
+    league_name TEXT,
+    quarter_minutes FLOAT,
+    avg_quarter_total FLOAT,
+    avg_pace FLOAT,
+    overdispersion_alpha FLOAT,
+    data_quality_tier INT,
+    season_active BOOLEAN,
+    notes TEXT
+);
+
+CREATE TABLE IF NOT EXISTS team_stats (
+    team_id TEXT,
+    league_id TEXT,
+    season TEXT,
+    games_played INT,
+    avg_pts_per_quarter FLOAT,
+    avg_pts_allowed_per_quarter FLOAT,
+    avg_fta_per_game FLOAT,
+    avg_fga_per_game FLOAT,
+    avg_3pa_per_game FLOAT,
+    avg_3p_pct FLOAT,
+    avg_ft_pct FLOAT,
+    avg_fouls_per_game FLOAT,
+    home_away_split FLOAT,
+    q1_adj FLOAT,
+    q2_adj FLOAT,
+    q3_adj FLOAT,
+    q4_adj FLOAT,
+    updated_at TIMESTAMPTZ,
+    PRIMARY KEY (team_id, league_id, season)
+);
+
+CREATE TABLE IF NOT EXISTS games (
+    game_id TEXT PRIMARY KEY,
+    league_id TEXT,
+    season TEXT,
+    game_date DATE,
+    home_team_id TEXT,
+    away_team_id TEXT,
+    q1_home INT, q1_away INT,
+    q2_home INT, q2_away INT,
+    q3_home INT, q3_away INT,
+    q4_home INT, q4_away INT,
+    ot_home INT, ot_away INT,
+    total_home INT, total_away INT,
+    home_fga INT, home_fgm INT,
+    home_3pa INT, home_3pm INT,
+    home_fta INT, home_ftm INT,
+    home_fouls INT, home_tov INT,
+    away_fga INT, away_fgm INT,
+    away_3pa INT, away_3pm INT,
+    away_fta INT, away_ftm INT,
+    away_fouls INT, away_tov INT,
+    data_completeness TEXT
+);
+
+CREATE TABLE IF NOT EXISTS line_snapshots (
+    id SERIAL PRIMARY KEY,
+    game_id TEXT,
+    quarter INT,
+    timestamp TIMESTAMPTZ,
+    game_clock TEXT,
+    book TEXT,
+    line FLOAT,
+    odds_over FLOAT,
+    odds_under FLOAT
+);
+
+CREATE TABLE IF NOT EXISTS signals (
+    id SERIAL PRIMARY KEY,
+    game_id TEXT,
+    league_id TEXT,
+    quarter INT,
+    timestamp TIMESTAMPTZ,
+    game_clock TEXT,
+    score_home INT,
+    score_away INT,
+    live_line FLOAT,
+    closing_line FLOAT,
+    prior_mean FLOAT,
+    prior_std FLOAT,
+    posterior_mean FLOAT,
+    posterior_std FLOAT,
+    p_over FLOAT,
+    p_under FLOAT,
+    ev_over FLOAT,
+    ev_under FLOAT,
+    implied_prob FLOAT,
+    pace_estimate FLOAT,
+    foul_rate FLOAT,
+    estimated_ft_pct FLOAT,
+    efficiency_vs_baseline FLOAT,
+    signal_side TEXT,
+    signal_ev FLOAT,
+    filters_passed BOOLEAN[],
+    filter_fail_reason TEXT,
+    bet_placed BOOLEAN,
+    actual_total INT,
+    clv FLOAT,
+    pnl FLOAT
+);

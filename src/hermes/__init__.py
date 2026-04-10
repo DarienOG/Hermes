@@ -1,0 +1,1 @@
+"""Hermes quarter totals package."""
